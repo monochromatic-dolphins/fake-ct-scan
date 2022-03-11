@@ -1,0 +1,1 @@
+(flutter pub get; flutter pub run import_sorter:main; flutter format lib/* -l 120)
