@@ -5,9 +5,8 @@ class Rectangle {
   late Point p2;
   late Point p3;
   late Point p4;
-  double m;
 
-  Rectangle(int x, int y, int width, int height, this.m) {
+  Rectangle(int x, int y, int width, int height) {
     p1 = Point(x, y);
     p2 = Point(x + width, y);
     p3 = Point(x, y + height);
