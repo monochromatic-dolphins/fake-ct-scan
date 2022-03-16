@@ -6,7 +6,7 @@ import 'package:fake_tomograf/models/straight_line.dart';
 class Tomograph {
   late Rectangle tomograph;
   late List<List<Point>> entryPoints = [[], []];
-  late List<StraightLine> bundles = [];
+  late List<StraightLine> beams = [];
   int m;
 
   Tomograph(int a, this.m) {
@@ -19,7 +19,7 @@ class Tomograph {
     double divider = a / (m - 1);
     for (var i = 0; i < m; i++) {
       entryPoints.first.add(Point(roundDouble(i * divider, 3), 0));
-      entryPoints.last.add(Point(roundDouble(i * divider, 3), a));
+      entryPoints.last.add(Point(roundDouble(i * divider, 3), a.toDouble()));
     }
   }
 
@@ -30,7 +30,7 @@ class Tomograph {
             entryPoints.first.elementAt(i).x, entryPoints.first.elementAt(i).y);
         Point point2 = Point(
             entryPoints.last.elementAt(j).x, entryPoints.last.elementAt(j).y);
-        bundles.add(StraightLine(point1, point2));
+        beams.add(StraightLine(point1, point2));
       }
     }
   }
