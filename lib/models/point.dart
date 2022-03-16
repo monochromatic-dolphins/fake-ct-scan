@@ -1,8 +1,8 @@
 import 'dart:math';
 
 class Point {
-  int x;
-  int y;
+  double x;
+  double y;
 
   Point(this.x, this.y);
 
