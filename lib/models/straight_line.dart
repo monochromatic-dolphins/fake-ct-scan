@@ -39,12 +39,18 @@ class StraightLine {
     }
   }
 
-  Point findPointOfInterception(StraightLine otherLine,
-      {Point? boundaryPoint1, Point? boundaryPoint2}) {
-    // TODO: Handle boundary points. Those from lines could be used.
+  /// Returns a point where two lines intersects if the point of intersection is
+  /// on the current line (between points creating the line). If the lines are
+  /// parallel or point is out of line boundaries returns a null.
+  /// The case for parallel lines should be handled separately, for example using
+  /// the `overlaps()` method.
+  Point? getPointOfIntersection(StraightLine otherLine) {
 
-    double x;
-    double y;
+    double? x;
+    double? y;
+    Point? point;
+
+    if (a == otherLine.a) return point;
 
     if (isDiagonal && otherLine.isDiagonal) {
       x = (otherLine.b - b) / (a - otherLine.a);
@@ -67,14 +73,26 @@ class StraightLine {
     } else if (isVertical && otherLine.isHorizontal) {
       x = b;
       y = otherLine.b;
-    } else {
-      throw Exception('Given lines does not intersect each other');
     }
 
-    return Point(x, y);
+    if (x != null && y != null) {
+      Point p = Point(x, y);
+      if (_isPointWithinBoundaryOfLine(p)) point = p;
+    }
+
+    return point;
   }
 
-  bool equals(StraightLine otherLine) {
+  bool _isPointWithinBoundaryOfLine(Point point) {
+    double xMin = p1.x < p2.x ? p1.x : p2.x;
+    double xMax = p1.x > p2.x ? p1.x : p2.x;
+    double yMin = p1.y < p2.y ? p1.y : p2.y;
+    double yMax = p1.y > p2.y ? p1.y : p2.y;
+
+    return (xMin <= point.x && point.x <= xMax) && (yMin <= point.y && point.y <= yMax);
+  }
+
+  bool overlaps(StraightLine otherLine) {
     return (a == otherLine.a && b == otherLine.b) &&
         (isDiagonal && otherLine.isDiagonal ||
             isVertical && otherLine.isVertical ||
