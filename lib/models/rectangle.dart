@@ -1,23 +1,51 @@
 import 'package:fake_tomograf/models/point.dart';
+import 'package:fake_tomograf/models/straight_line.dart';
 
 class Rectangle {
-  late Point p1;
-  late Point p2;
-  late Point p3;
-  late Point p4;
+  late Point pointTopLeft;
+  late Point pointTopRight;
+  late Point pointBottomRight;
+  late Point pointBottomLeft;
   late double resistance;
-
-  // TODO: Add lines
+  late StraightLine lineTop;
+  late StraightLine lineRight;
+  late StraightLine lineBottom;
+  late StraightLine lineLeft;
 
   Rectangle(int x, int y, int width, int height, {this.resistance = 0.0}) {
-    p1 = Point(x.toDouble(), y.toDouble());
-    p2 = Point(x.toDouble() + width, y.toDouble());
-    p3 = Point(x.toDouble(), y.toDouble() + height);
-    p4 = Point(x.toDouble() + width, y.toDouble() + height);
+    pointTopLeft = Point(x.toDouble(), y.toDouble());
+    pointTopRight = Point(x.toDouble() + width, y.toDouble());
+    pointBottomRight = Point(x.toDouble() + width, y.toDouble() - height);
+    pointBottomLeft = Point(x.toDouble(), y.toDouble() - height);
+    lineTop = StraightLine(pointTopLeft, pointTopRight);
+    lineRight = StraightLine(pointTopRight, pointBottomRight);
+    lineBottom = StraightLine(pointBottomRight, pointBottomLeft);
+    lineLeft = StraightLine(pointBottomLeft, pointTopLeft);
+  }
+
+  List<Point> getIntersectionPoints(StraightLine otherLine) {
+    // Check interceptions on edge overlapping
+    if (otherLine.overlaps(lineLeft)) return [pointTopLeft, pointBottomLeft];
+    if (otherLine.overlaps(lineRight)) return [pointTopRight, pointBottomRight];
+    if (otherLine.overlaps(lineTop)) return [pointTopLeft, pointTopRight];
+    if (otherLine.overlaps(lineBottom)) return [pointBottomLeft, pointBottomRight];
+
+    // Find point of interception for each line
+    List<Point> pointsOfIntersections = [lineTop, lineRight, lineBottom, lineLeft].fold(<Point>[], (List<Point> result, rectangleLine) {
+      Point? point = otherLine.getPointOfIntersection(rectangleLine);
+      if (point != null) result.add(point);
+      return result;
+    });
+
+    // Remove duplicates
+    Set<String> pointsTmp = <String>{};
+    pointsOfIntersections = pointsOfIntersections.where((point) => pointsTmp.add(point.toString())).toList();
+
+    return pointsOfIntersections;
   }
 
   @override
   String toString() {
-    return '${p1.toString()}, ${p2.toString()}\n${p3.toString()}, ${p4.toString()}';
+    return '${pointTopLeft.toString()}, ${pointTopRight.toString()}\n${pointBottomRight.toString()}, ${pointBottomLeft.toString()}';
   }
 }

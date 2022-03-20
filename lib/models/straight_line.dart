@@ -77,13 +77,13 @@ class StraightLine {
 
     if (x != null && y != null) {
       Point p = Point(x, y);
-      if (_isPointWithinBoundaryOfLine(p)) point = p;
+      if (isPointWithinBoundaryOfLine(p) && otherLine.isPointWithinBoundaryOfLine(p)) point = p;
     }
 
     return point;
   }
 
-  bool _isPointWithinBoundaryOfLine(Point point) {
+  bool isPointWithinBoundaryOfLine(Point point) {
     double xMin = p1.x < p2.x ? p1.x : p2.x;
     double xMax = p1.x > p2.x ? p1.x : p2.x;
     double yMin = p1.y < p2.y ? p1.y : p2.y;
