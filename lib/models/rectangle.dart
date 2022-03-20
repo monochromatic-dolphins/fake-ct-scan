@@ -24,13 +24,13 @@ class Rectangle {
   }
 
   List<Point> getIntersectionPoints(StraightLine otherLine) {
-    // Check interceptions on edge overlapping
+    // Check intersections on edge overlapping
     if (otherLine.overlaps(lineLeft)) return [pointTopLeft, pointBottomLeft];
     if (otherLine.overlaps(lineRight)) return [pointTopRight, pointBottomRight];
     if (otherLine.overlaps(lineTop)) return [pointTopLeft, pointTopRight];
     if (otherLine.overlaps(lineBottom)) return [pointBottomLeft, pointBottomRight];
 
-    // Find point of interception for each line
+    // Find point of intersection for each line
     List<Point> pointsOfIntersections = [lineTop, lineRight, lineBottom, lineLeft].fold(<Point>[], (List<Point> result, rectangleLine) {
       Point? point = otherLine.getPointOfIntersection(rectangleLine);
       if (point != null) result.add(point);
