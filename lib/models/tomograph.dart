@@ -5,32 +5,29 @@ import 'package:fake_tomograf/models/straight_line.dart';
 
 class Tomograph {
   late Rectangle tomograph;
-  late List<List<Point>> entryPoints = [[], []];
+  late List<Point> emitters = [];
+  late List<Point> receivers = [];
   late List<StraightLine> beams = [];
   int m;
 
   Tomograph(int a, this.m) {
     tomograph = Rectangle(0, 0, a, a);
     _calculateEntryPoints(a);
-    _calculateBundleLines();
+    _createBeams();
   }
 
   void _calculateEntryPoints(int a) {
     double divider = a / (m - 1);
     for (var i = 0; i < m; i++) {
-      entryPoints.first.add(Point(roundDouble(i * divider, 3), 0));
-      entryPoints.last.add(Point(roundDouble(i * divider, 3), a.toDouble()));
+      emitters.add(Point(roundDouble(i * divider, 3), 0));
+      receivers.add(Point(roundDouble(i * divider, 3), a.toDouble()));
     }
   }
 
-  void _calculateBundleLines() {
-    for (var i = 0; i < m; i++) {
-      for (var j = 0; j < m; j++) {
-        Point point1 = Point(
-            entryPoints.first.elementAt(i).x, entryPoints.first.elementAt(i).y);
-        Point point2 = Point(
-            entryPoints.last.elementAt(j).x, entryPoints.last.elementAt(j).y);
-        beams.add(StraightLine(point1, point2));
+  void _createBeams() {
+    for (Point emitter in emitters) {
+      for (Point receiver in receivers) {
+        beams.add(StraightLine(emitter, receiver));
       }
     }
   }

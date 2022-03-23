@@ -5,7 +5,6 @@ class StraightLine {
   Point p2;
   late double a;
   late double b;
-  late final String equation;
 
   StraightLine(this.p1, this.p2) {
     if (p1.equals(p2)) {
