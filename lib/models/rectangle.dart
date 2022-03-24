@@ -1,5 +1,6 @@
 import 'package:fake_tomograf/models/point.dart';
 import 'package:fake_tomograf/models/straight_line.dart';
+import 'package:fake_tomograf/view_models/rectangle_view_model.dart';
 
 class Rectangle {
   late Point pointTopLeft;
@@ -23,15 +24,30 @@ class Rectangle {
     lineLeft = StraightLine(pointBottomLeft, pointTopLeft);
   }
 
+  factory Rectangle.fromViewModel(RectangleViewModel viewModel) {
+    return Rectangle(
+      viewModel.rectangleX, viewModel.rectangleY,
+      viewModel.rectangleXwidth, viewModel.rectangleYlength,
+      resistance: viewModel.absorptionCapacity,
+    );
+  }
+
   List<Point> getIntersectionPoints(StraightLine otherLine) {
     // Check intersections on edge overlapping
     if (otherLine.overlaps(lineLeft)) return [pointTopLeft, pointBottomLeft];
     if (otherLine.overlaps(lineRight)) return [pointTopRight, pointBottomRight];
     if (otherLine.overlaps(lineTop)) return [pointTopLeft, pointTopRight];
-    if (otherLine.overlaps(lineBottom)) return [pointBottomLeft, pointBottomRight];
+    if (otherLine.overlaps(lineBottom)) {
+      return [pointBottomLeft, pointBottomRight];
+    }
 
     // Find point of intersection for each line
-    List<Point> pointsOfIntersections = [lineTop, lineRight, lineBottom, lineLeft].fold(<Point>[], (List<Point> result, rectangleLine) {
+    List<Point> pointsOfIntersections = [
+      lineTop,
+      lineRight,
+      lineBottom,
+      lineLeft
+    ].fold(<Point>[], (List<Point> result, rectangleLine) {
       Point? point = otherLine.getPointOfIntersection(rectangleLine);
       if (point != null) result.add(point);
       return result;
@@ -39,13 +55,15 @@ class Rectangle {
 
     // Remove duplicates
     Set<String> pointsTmp = <String>{};
-    pointsOfIntersections = pointsOfIntersections.where((point) => pointsTmp.add(point.toString())).toList();
+    pointsOfIntersections =
+        pointsOfIntersections.where((point) => pointsTmp.add(point.toString()))
+            .toList();
 
     return pointsOfIntersections;
   }
 
   @override
   String toString() {
-    return '${pointTopLeft.toString()}, ${pointTopRight.toString()}\n${pointBottomRight.toString()}, ${pointBottomLeft.toString()}';
+    return '$pointTopLeft, $pointTopRight\n$pointBottomRight, $pointBottomLeft';
   }
 }

@@ -8,11 +8,12 @@ class Tomograph {
   late List<Point> emitters = [];
   late List<Point> receivers = [];
   late List<StraightLine> beams = [];
+  late List<Rectangle> rectangles = [];
   int m;
 
-  Tomograph(int a, this.m) {
-    tomograph = Rectangle(0, 0, a, a);
-    _calculateEntryPoints(a);
+  Tomograph(int resolution, this.m) {
+    tomograph = Rectangle(0, 0, resolution, resolution);
+    _calculateEntryPoints(resolution);
     _createBeams();
   }
 
@@ -36,4 +37,7 @@ class Tomograph {
     num mod = pow(10.0, places);
     return ((value * mod).round().toDouble() / mod);
   }
+
+  @override
+  String toString() => '$tomograph, $m, $beams, $rectangles';
 }

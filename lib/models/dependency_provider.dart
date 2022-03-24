@@ -23,7 +23,7 @@ class _DependencyProviderState extends State<DependencyProvider> {
   @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
-          Provider(create: (context) => AppState()),
+          ChangeNotifierProvider(create: (context) => AppState()),
         ],
         child: widget.child,
       );
