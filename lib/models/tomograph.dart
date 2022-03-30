@@ -1,10 +1,13 @@
+// Dart imports:
 import 'dart:math';
+
+// Project imports:
 import 'package:fake_tomograf/models/point.dart';
 import 'package:fake_tomograf/models/rectangle.dart';
 import 'package:fake_tomograf/models/straight_line.dart';
 
 class Tomograph {
-  late Rectangle tomograph;
+  late Rectangle board;
   late List<Point> emitters = [];
   late List<Point> receivers = [];
   late List<StraightLine> beams = [];
@@ -12,7 +15,7 @@ class Tomograph {
   int m;
 
   Tomograph(int resolution, this.m) {
-    tomograph = Rectangle(0, 0, resolution, resolution);
+    board = Rectangle(0, 0, resolution, resolution);
     _calculateEntryPoints(resolution);
     _createBeams();
   }
@@ -39,5 +42,5 @@ class Tomograph {
   }
 
   @override
-  String toString() => '$tomograph, $m, $beams, $rectangles';
+  String toString() => '$board, $m, $beams, $rectangles';
 }

@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:fake_tomograf/models/point.dart';
 
 class StraightLine {
@@ -44,7 +45,6 @@ class StraightLine {
   /// The case for parallel lines should be handled separately, for example using
   /// the `overlaps()` method.
   Point? getPointOfIntersection(StraightLine otherLine) {
-
     double? x;
     double? y;
     Point? point;
