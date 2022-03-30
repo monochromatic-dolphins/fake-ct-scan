@@ -1,8 +1,18 @@
+// Dart imports:
+import 'dart:math';
+
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:fake_tomograf/models/tomograph.dart';
+import 'package:fake_tomograf/pages/widgets/mesh_painter.dart';
+import 'rectangle_painter.dart';
+
 class CTScanDrawer extends StatefulWidget {
-  const CTScanDrawer({Key? key}) : super(key: key);
+  const CTScanDrawer(this.tomograph, {Key? key}) : super(key: key);
+  final Tomograph tomograph;
 
   @override
   State<StatefulWidget> createState() => _CTScanDrawerState();
@@ -10,15 +20,20 @@ class CTScanDrawer extends StatefulWidget {
 
 class _CTScanDrawerState extends State<CTScanDrawer> {
   @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          Expanded(
-            child: Container(
-            decoration: BoxDecoration(
-              color: Colors.blueGrey,
+  Widget build(BuildContext context) => Center(
+        child: Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.rotationX(pi),
+          child: CustomPaint(
+            child: CustomPaint(
+              child: SizedBox(
+                width: widget.tomograph.board.width.toDouble() * 10,
+                height: widget.tomograph.board.height.toDouble() * 10,
+              ),
+              foregroundPainter: MeshPainter(widget.tomograph),
             ),
-            child: Text('Tu będzie tomograf jak go narysuję'),
+            foregroundPainter: RectanglePainter(widget.tomograph),
+          ),
         ),
-          ),]
       );
 }

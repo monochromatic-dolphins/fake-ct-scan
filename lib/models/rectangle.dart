@@ -1,36 +1,68 @@
+// Project imports:
 import 'package:fake_tomograf/models/point.dart';
 import 'package:fake_tomograf/models/straight_line.dart';
 import 'package:fake_tomograf/view_models/rectangle_view_model.dart';
 
 class Rectangle {
-  late Point pointTopLeft;
-  late Point pointTopRight;
-  late Point pointBottomRight;
-  late Point pointBottomLeft;
-  late double resistance;
-  late StraightLine lineTop;
-  late StraightLine lineRight;
-  late StraightLine lineBottom;
-  late StraightLine lineLeft;
+  final Point pointTopLeft;
+  final Point pointTopRight;
+  final Point pointBottomRight;
+  final Point pointBottomLeft;
+  final double resistance;
+  final StraightLine lineTop;
+  final StraightLine lineRight;
+  final StraightLine lineBottom;
+  final StraightLine lineLeft;
+  final int width;
+  final int height;
 
-  Rectangle(int x, int y, int width, int height, {this.resistance = 0.0}) {
-    pointTopLeft = Point(x.toDouble(), y.toDouble());
-    pointTopRight = Point(x.toDouble() + width, y.toDouble());
-    pointBottomRight = Point(x.toDouble() + width, y.toDouble() - height);
-    pointBottomLeft = Point(x.toDouble(), y.toDouble() - height);
-    lineTop = StraightLine(pointTopLeft, pointTopRight);
-    lineRight = StraightLine(pointTopRight, pointBottomRight);
-    lineBottom = StraightLine(pointBottomRight, pointBottomLeft);
-    lineLeft = StraightLine(pointBottomLeft, pointTopLeft);
+  factory Rectangle(int x, int y, int width, int height, {double? resistance}) {
+    final pointBottomLeft = Point(x.toDouble(), y.toDouble());
+    final pointBottomRight = Point(x.toDouble() + width, y.toDouble());
+    final pointTopRight = Point(x.toDouble() + width, y.toDouble() + height);
+    final pointTopLeft = Point(x.toDouble(), y.toDouble() + height);
+    final lineTop = StraightLine(pointTopLeft, pointTopRight);
+    final lineRight = StraightLine(pointTopRight, pointBottomRight);
+    final lineBottom = StraightLine(pointBottomRight, pointBottomLeft);
+    final lineLeft = StraightLine(pointBottomLeft, pointTopLeft);
+    return Rectangle._internal(
+      height: height,
+      width: width,
+      lineLeft: lineLeft,
+      lineRight: lineRight,
+      lineBottom: lineBottom,
+      lineTop: lineTop,
+      pointBottomLeft: pointBottomLeft,
+      pointBottomRight: pointBottomRight,
+      pointTopLeft: pointTopLeft,
+      pointTopRight: pointTopRight,
+      resistance: resistance ?? 0,
+    );
   }
 
   factory Rectangle.fromViewModel(RectangleViewModel viewModel) {
     return Rectangle(
-      viewModel.rectangleX, viewModel.rectangleY,
-      viewModel.rectangleXwidth, viewModel.rectangleYlength,
+      viewModel.rectangleX,
+      viewModel.rectangleY,
+      viewModel.rectangleXwidth,
+      viewModel.rectangleYlength,
       resistance: viewModel.absorptionCapacity,
     );
   }
+
+  Rectangle._internal({
+    required this.height,
+    required this.width,
+    required this.lineLeft,
+    required this.lineRight,
+    required this.lineBottom,
+    required this.lineTop,
+    required this.pointBottomLeft,
+    required this.pointBottomRight,
+    required this.pointTopLeft,
+    required this.pointTopRight,
+    required this.resistance,
+  });
 
   List<Point> getIntersectionPoints(StraightLine otherLine) {
     // Check intersections on edge overlapping
@@ -42,12 +74,8 @@ class Rectangle {
     }
 
     // Find point of intersection for each line
-    List<Point> pointsOfIntersections = [
-      lineTop,
-      lineRight,
-      lineBottom,
-      lineLeft
-    ].fold(<Point>[], (List<Point> result, rectangleLine) {
+    List<Point> pointsOfIntersections =
+        [lineTop, lineRight, lineBottom, lineLeft].fold(<Point>[], (List<Point> result, rectangleLine) {
       Point? point = otherLine.getPointOfIntersection(rectangleLine);
       if (point != null) result.add(point);
       return result;
@@ -55,9 +83,7 @@ class Rectangle {
 
     // Remove duplicates
     Set<String> pointsTmp = <String>{};
-    pointsOfIntersections =
-        pointsOfIntersections.where((point) => pointsTmp.add(point.toString()))
-            .toList();
+    pointsOfIntersections = pointsOfIntersections.where((point) => pointsTmp.add(point.toString())).toList();
 
     return pointsOfIntersections;
   }
@@ -65,5 +91,19 @@ class Rectangle {
   @override
   String toString() {
     return '$pointTopLeft, $pointTopRight\n$pointBottomRight, $pointBottomLeft';
+  }
+}
+
+enum ResistanceRange { low, medium, high }
+
+extension ResistanceValueExtension on double {
+  ResistanceRange getResistanceRange() {
+    if (this < 3) {
+      return ResistanceRange.low;
+    } else if (this < 6) {
+      return ResistanceRange.medium;
+    } else {
+      return ResistanceRange.high;
+    }
   }
 }
