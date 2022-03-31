@@ -23,7 +23,7 @@ class AppState extends ChangeNotifier {
   }
 
   void calculate() {
-    var beamsWithLose = tomograph?.getBeamsLost();
+    var beamsWithLose = tomograph?.getBeamsLoss();
     beamsWithLose?.forEach((key, value) {
       print('$key - $value');
     });

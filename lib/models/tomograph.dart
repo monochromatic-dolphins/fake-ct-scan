@@ -41,21 +41,21 @@ class Tomograph {
     return ((value * mod).round().toDouble() / mod);
   }
 
-  Map<StraightLine, double> getBeamsLost() {
-    var beamsWithLose = <StraightLine, double>{};
+  Map<StraightLine, double> getBeamsLoss() {
+    var beamsWithLoss = <StraightLine, double>{};
     for (var beam in beams) {
-      var beamTotalLost = 0.0;
+      var beamTotalLoss = 0.0;
       for (var rectangle in rectangles) {
         var points = rectangle.getIntersectionPoints(beam);
         if (points.isNotEmpty) {
           var length = points.first.getDistance(points[1]);
           var beamLost = length * rectangle.resistance;
-          beamTotalLost += beamLost;
+          beamTotalLoss += beamLost;
         }
       }
-      beamsWithLose.putIfAbsent(beam, () => beamTotalLost);
+      beamsWithLoss.putIfAbsent(beam, () => beamTotalLoss);
     }
-    return beamsWithLose;
+    return beamsWithLoss;
   }
 
   @override
