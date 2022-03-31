@@ -23,7 +23,10 @@ class AppState extends ChangeNotifier {
   }
 
   void calculate() {
-    //TODO: SZYMON TU SE WYWOŁAJ SWOJE
+    var beamsWithLose = tomograph?.getBeamsLoss();
+    beamsWithLose?.forEach((key, value) {
+      print('$key - $value');
+    });
     debugPrint('done');
   }
 }
