@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             TextFormField(
-              controller: _resolutionController..text = '80',
+              controller: _resolutionController..text = '10',
               decoration: const InputDecoration(
                 label: Text('Rozdzielczość'),
               ),
@@ -186,6 +186,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _finishEditing() {
-    Provider.of<AppState>(context, listen: false).calculate();
+    Provider.of<AppState>(context, listen: false).calculateBeamsWithLoss();
   }
 }
