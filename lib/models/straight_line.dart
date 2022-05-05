@@ -49,7 +49,7 @@ class StraightLine {
     double? y;
     Point? point;
 
-    if (a == otherLine.a) return point;
+    if (overlaps(otherLine)) return point;
 
     if (isDiagonal && otherLine.isDiagonal) {
       x = (otherLine.b - b) / (a - otherLine.a);
@@ -75,6 +75,9 @@ class StraightLine {
     }
 
     if (x != null && y != null) {
+      x = x == -0.0 ? 0 : x;
+      y = y == -0.0 ? 0 : y;
+
       Point p = Point(x, y);
       if (isPointWithinBoundaryOfLine(p) && otherLine.isPointWithinBoundaryOfLine(p)) point = p;
     }
