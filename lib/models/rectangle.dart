@@ -1,6 +1,7 @@
 // Project imports:
 import 'package:fake_tomograf/models/point.dart';
 import 'package:fake_tomograf/models/straight_line.dart';
+import 'package:fake_tomograf/models/tomograph.dart';
 import 'package:fake_tomograf/view_models/rectangle_view_model.dart';
 
 class Rectangle {
@@ -74,8 +75,12 @@ class Rectangle {
     }
 
     // Find point of intersection for each line
-    List<Point> pointsOfIntersections =
-        [lineTop, lineRight, lineBottom, lineLeft].fold(<Point>[], (List<Point> result, rectangleLine) {
+    List<Point> pointsOfIntersections = [
+      lineTop,
+      lineRight,
+      lineBottom,
+      lineLeft
+    ].fold(<Point>[], (List<Point> result, rectangleLine) {
       Point? point = otherLine.getPointOfIntersection(rectangleLine);
       if (point != null) result.add(point);
       return result;
@@ -83,14 +88,37 @@ class Rectangle {
 
     // Remove duplicates
     Set<String> pointsTmp = <String>{};
-    pointsOfIntersections = pointsOfIntersections.where((point) => pointsTmp.add(point.toString())).toList();
+    pointsOfIntersections = pointsOfIntersections
+        .where((point) => pointsTmp.add(point.toString()))
+        .toList();
 
     return pointsOfIntersections;
   }
 
+  bool isPointInside(Point point) {
+    return point.x >= pointBottomLeft.x &&
+        point.x <= pointBottomRight.x &&
+        point.y <= pointTopRight.y &&
+        point.y >= pointBottomRight.y;
+  }
+
+  MoveDirection getPointDirection(Point point) {
+    if (point == pointTopLeft) {
+      return MoveDirection.diagonalLeft;
+    } else if (point.x == pointTopLeft.x) {
+      return MoveDirection.left;
+    } else if (point.x > pointTopLeft.x && point.x < pointTopRight.x) {
+      return MoveDirection.top;
+    } else if (point == pointTopRight) {
+      return MoveDirection.diagonalRight;
+    } else {
+      return MoveDirection.right;
+    }
+  }
+
   @override
   String toString() {
-    return '$pointTopLeft, $pointTopRight\n$pointBottomRight, $pointBottomLeft';
+    return 'tl: $pointTopLeft, tr: $pointTopRight, br: $pointBottomRight, bl: $pointBottomLeft';
   }
 }
 

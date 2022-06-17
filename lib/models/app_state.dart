@@ -15,6 +15,7 @@ class AppState extends ChangeNotifier {
     tomograph = Tomograph(int.parse(resolution), int.parse(rays));
     isTomographReady = true;
     notifyListeners();
+    calculateSecondTask();
   }
 
   void addRectangle(RectangleViewModel viewModel) {
@@ -22,11 +23,19 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void calculate() {
-    var beamsWithLose = tomograph?.getBeamsLoss();
-    beamsWithLose?.forEach((key, value) {
+  void calculateBeamsWithLoss() {
+    var beamsWithLoss = tomograph?.getBeamsLoss();
+    beamsWithLoss?.forEach((key, value) {
       print('$key - $value');
     });
-    debugPrint('done');
+    debugPrint('done calculateBeamsWithLoss');
+  }
+
+  void calculateSecondTask() {
+    var beamsWithPixels = tomograph?.getBeamsWithPixels();
+    beamsWithPixels?.forEach((key, value) {
+      print('$key - $value');
+    });
+    debugPrint('done calculateSecondTask');
   }
 }

@@ -1,13 +1,17 @@
 // Dart imports:
 import 'dart:math';
+import 'dart:ui';
+import 'package:collection/collection.dart';
 
 // Project imports:
+import 'package:fake_tomograf/models/pixel_with_length.dart';
 import 'package:fake_tomograf/models/point.dart';
 import 'package:fake_tomograf/models/rectangle.dart';
 import 'package:fake_tomograf/models/straight_line.dart';
 
 class Tomograph {
   late Rectangle board;
+  late List<Rectangle> pixelBoard;
   late List<Point> emitters = [];
   late List<Point> receivers = [];
   late List<StraightLine> beams = [];
@@ -16,8 +20,19 @@ class Tomograph {
 
   Tomograph(int resolution, this.m) {
     board = Rectangle(0, 0, resolution, resolution);
+    pixelBoard = _createPixelBoard(resolution);
     _calculateEntryPoints(resolution);
     _createBeams();
+  }
+
+  List<Rectangle> _createPixelBoard(int resolution) {
+    List<Rectangle> pixels = [];
+    for (int i = 0; i < resolution; i++) {
+      for (int j = 0; j < resolution; j++) {
+        pixels.add(Rectangle(i, j, 1, 1));
+      }
+    }
+    return pixels;
   }
 
   void _calculateEntryPoints(int a) {
@@ -47,7 +62,7 @@ class Tomograph {
       var beamTotalLoss = 0.0;
       for (var rectangle in rectangles) {
         var points = rectangle.getIntersectionPoints(beam);
-        if (points.isNotEmpty) {
+        if (points.isNotEmpty && points.length > 1) {
           var length = points.first.getDistance(points[1]);
           var beamLost = length * rectangle.resistance;
           beamTotalLoss += beamLost;
@@ -58,6 +73,89 @@ class Tomograph {
     return beamsWithLoss;
   }
 
+  Map<StraightLine, List<PixelWithLength>> getBeamsWithPixels() {
+    var beamsWithPixels = <StraightLine, List<PixelWithLength>>{};
+    for (var beam in beams) {
+      beamsWithPixels[beam] = [];
+      var startingPoint = beam.p1;
+      Rectangle? currentPixel;
+
+      // Search for the first pixel
+      for (var pixel in pixelBoard) {
+        if (pixel.isPointInside(startingPoint)) {
+          currentPixel = pixel;
+          break;
+        }
+      }
+      do {
+        var intersectionPoints = currentPixel!.getIntersectionPoints(beam);
+        if (intersectionPoints.length == 2) {
+          var lengthInPixel =
+              intersectionPoints[0].getDistance(intersectionPoints[1]);
+          beamsWithPixels[beam]
+              ?.add(PixelWithLength(currentPixel, lengthInPixel));
+        }
+        currentPixel = getNextPixel(beam, currentPixel);
+      } while (currentPixel != null);
+    }
+    return beamsWithPixels;
+  }
+
+  // Move through the pixel board, but not iterate over all of the pixels
+  Rectangle? getNextPixel(StraightLine beam, Rectangle currentPixel) {
+    // TODO: 10 -> resolution
+    if (currentPixel.pointTopLeft.y == 10.0) {
+      return null;
+    } else if (beam.isVertical) {
+      return pixelBoard.firstWhereOrNull((element) {
+        return element.pointBottomRight == currentPixel.pointTopRight &&
+            element.pointBottomLeft == currentPixel.pointTopLeft;
+      });
+    } else {
+      var intersectionPoints = currentPixel.getIntersectionPoints(beam);
+      var higherPoint = intersectionPoints.reduce((value, element) {
+        if (value.y > element.y) {
+          return value;
+        } else {
+          return element;
+        }
+      });
+      var direction = currentPixel.getPointDirection(higherPoint);
+      switch (direction) {
+        case MoveDirection.left:
+          {
+            return pixelBoard.singleWhere((element) =>
+                element.pointTopRight == currentPixel.pointTopLeft &&
+                element.pointBottomRight == currentPixel.pointBottomLeft);
+          }
+        case MoveDirection.diagonalLeft:
+          {
+            return pixelBoard.singleWhere((element) =>
+                element.pointBottomRight == currentPixel.pointTopLeft);
+          }
+        case MoveDirection.top:
+          {
+            return pixelBoard.singleWhere((element) =>
+                element.pointBottomLeft == currentPixel.pointTopLeft &&
+                element.pointBottomRight == currentPixel.pointTopRight);
+          }
+        case MoveDirection.diagonalRight:
+          {
+            return pixelBoard.singleWhere((element) =>
+                element.pointBottomLeft == currentPixel.pointTopRight);
+          }
+        case MoveDirection.right:
+          {
+            return pixelBoard.singleWhere((element) =>
+                element.pointTopLeft == currentPixel.pointTopRight &&
+                element.pointBottomLeft == currentPixel.pointBottomRight);
+          }
+      }
+    }
+  }
+
   @override
   String toString() => '$board, $m, $beams, $rectangles';
 }
+
+enum MoveDirection { left, diagonalLeft, top, diagonalRight, right }

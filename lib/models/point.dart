@@ -16,7 +16,17 @@ class Point {
   }
 
   @override
+  bool operator ==(Object other) =>
+      other is Point &&
+      other.runtimeType == runtimeType &&
+      other.x == x &&
+      other.y == y;
+
+  @override
   String toString() {
     return '($x, $y)';
   }
+
+  @override
+  int get hashCode => super.hashCode;
 }
