@@ -94,13 +94,6 @@ class Tomograph {
               intersectionPoints[0].getDistance(intersectionPoints[1]);
           beamsWithPixels[beam]
               ?.add(PixelWithLength(currentPixel, lengthInPixel));
-        } else {
-          // FIXME
-          print('Pixel $currentPixel');
-          print('and beam $beam has');
-          print('${intersectionPoints.length} intersection points:');
-          print(intersectionPoints);
-          print('');
         }
         currentPixel = getNextPixel(beam, currentPixel);
       } while (currentPixel != null);

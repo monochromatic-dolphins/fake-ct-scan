@@ -28,10 +28,14 @@ class AppState extends ChangeNotifier {
     beamsWithLoss?.forEach((key, value) {
       print('$key - $value');
     });
-    debugPrint('done');
+    debugPrint('done calculateBeamsWithLoss');
   }
 
   void calculateSecondTask() {
     var beamsWithPixels = tomograph?.getBeamsWithPixels();
+    beamsWithPixels?.forEach((key, value) {
+      print('$key - $value');
+    });
+    debugPrint('done calculateSecondTask');
   }
 }
