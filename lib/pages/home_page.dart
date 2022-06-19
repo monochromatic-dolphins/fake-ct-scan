@@ -85,13 +85,13 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             TextFormField(
-              controller: _resolutionController..text = '10',
+              controller: _resolutionController..text = '7',
               decoration: const InputDecoration(
                 label: Text('Rozdzielczość'),
               ),
             ),
             TextFormField(
-              controller: _rayCountController..text = '4',
+              controller: _rayCountController..text = '10',
               decoration: const InputDecoration(
                 label: Text('Ilość wiązek'),
               ),
@@ -99,7 +99,8 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 36),
             ElevatedButton(
               onPressed: () => Provider.of<AppState>(context, listen: false)
-                  .createTomograph(_resolutionController.text, _rayCountController.text),
+                  .createTomograph(
+                      _resolutionController.text, _rayCountController.text),
               child: const Text('Stwórz tomograf'),
             )
           ],
@@ -111,25 +112,25 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             TextFormField(
-              controller: _rectangleStartXController..text = '10',
+              controller: _rectangleStartXController..text = '1',
               decoration: const InputDecoration(
                 label: Text('Lewy dolny róg prostokąta X'),
               ),
             ),
             TextFormField(
-              controller: _rectangleStartYController..text = '20',
+              controller: _rectangleStartYController..text = '1',
               decoration: const InputDecoration(
                 label: Text('Lewy dolny róg prostokąta Y'),
               ),
             ),
             TextFormField(
-              controller: _widthXController..text = '15',
+              controller: _widthXController..text = '2',
               decoration: const InputDecoration(
                 label: Text('Szerokość prostokąta (x)'),
               ),
             ),
             TextFormField(
-              controller: _lengthYController..text = '20',
+              controller: _lengthYController..text = '3',
               decoration: const InputDecoration(
                 label: Text('Długość prostokoąta (y)'),
               ),
@@ -175,17 +176,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _addRectangle() {
-    Provider.of<AppState>(context, listen: false).addRectangle(RectangleViewModel(
+    Provider.of<AppState>(context, listen: false)
+        .addRectangle(RectangleViewModel(
       rectangleStartX: _rectangleStartXController.text,
       rectangleStartY: _rectangleStartYController.text,
-      rectangleXwidth: _widthXController.text,
-      rectangleYlength: _lengthYController.text,
+      rectangleXWidth: _widthXController.text,
+      rectangleYLength: _lengthYController.text,
       absorptionCapacity: _absorptionCapacityController.text,
     ));
     _formKey.currentState?.reset();
   }
 
   void _finishEditing() {
-    Provider.of<AppState>(context, listen: false).calculateBeamsWithLoss();
+    var pixels =
+        Provider.of<AppState>(context, listen: false).calculationsGoBrrr(7);
+    pixels.asMap().forEach((key, value) {
+     // if (value > 0) {
+        print("${key} -> ${value}");
+     // }
+    });
   }
 }

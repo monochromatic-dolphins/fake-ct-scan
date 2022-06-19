@@ -116,6 +116,10 @@ class Rectangle {
     }
   }
 
+  int toIndex(int resolution) {
+    return pointBottomLeft.x.toInt() + pointBottomLeft.y.toInt() * resolution;
+  }
+
   @override
   String toString() {
     return 'tl: $pointTopLeft, tr: $pointTopRight, br: $pointBottomRight, bl: $pointBottomLeft';

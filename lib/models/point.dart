@@ -27,6 +27,4 @@ class Point {
     return '($x, $y)';
   }
 
-  @override
-  int get hashCode => super.hashCode;
 }

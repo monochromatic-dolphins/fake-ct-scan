@@ -73,10 +73,10 @@ class Tomograph {
     return beamsWithLoss;
   }
 
-  Map<StraightLine, List<PixelWithLength>> getBeamsWithPixels() {
-    var beamsWithPixels = <StraightLine, List<PixelWithLength>>{};
+  Map<StraightLine, List<double>> getBeamsWithPixels(int resolution) {
+    var beamsWithPixels = <StraightLine, List<double>>{};
     for (var beam in beams) {
-      beamsWithPixels[beam] = [];
+      beamsWithPixels[beam] = List.filled(resolution * resolution, 0.0);
       var startingPoint = beam.p1;
       Rectangle? currentPixel;
 
@@ -92,19 +92,19 @@ class Tomograph {
         if (intersectionPoints.length == 2) {
           var lengthInPixel =
               intersectionPoints[0].getDistance(intersectionPoints[1]);
-          beamsWithPixels[beam]
-              ?.add(PixelWithLength(currentPixel, lengthInPixel));
+          (beamsWithPixels[beam])![currentPixel.toIndex(resolution)] =
+              lengthInPixel;
         }
-        currentPixel = getNextPixel(beam, currentPixel);
+        currentPixel = getNextPixel(beam, currentPixel, resolution);
       } while (currentPixel != null);
     }
+
     return beamsWithPixels;
   }
 
   // Move through the pixel board, but not iterate over all of the pixels
-  Rectangle? getNextPixel(StraightLine beam, Rectangle currentPixel) {
-    // TODO: 10 -> resolution
-    if (currentPixel.pointTopLeft.y == 10.0) {
+  Rectangle? getNextPixel(StraightLine beam, Rectangle currentPixel, int resolution) {
+    if (currentPixel.pointTopLeft.y == resolution) {
       return null;
     } else if (beam.isVertical) {
       return pixelBoard.firstWhereOrNull((element) {
