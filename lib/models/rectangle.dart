@@ -92,7 +92,11 @@ class Rectangle {
         .where((point) => pointsTmp.add(point.toString()))
         .toList();
 
-    return pointsOfIntersections;
+    if (pointsOfIntersections.length == 1) {
+      return pointsOfIntersections.map((e) => Point(double.parse(e.x.toStringAsFixed(3)), double.parse(e.y.toStringAsFixed(3)))).toList();
+    } else {
+      return pointsOfIntersections;
+    }
   }
 
   bool isPointInside(Point point) {

@@ -63,11 +63,9 @@ class MeshPainter extends CustomPainter {
 
       final row = (i / tomograph.board.width).floor();
       final column = i % tomograph.board.width;
-      print('Pixel $i -> row: $row, column $column, value ${pixels[i]}');
 
       final rect = Rect.fromLTWH(column.toDouble() * stepSize, row.toDouble() * stepSize, stepSize, stepSize,);
       final opacity = pixels[i] / maxValue;
-      print(opacity);
       final paint = Paint()..color = Color.fromRGBO(0, 255, 0, opacity);
       canvas.drawRect(rect, paint);
     }
