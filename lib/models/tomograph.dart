@@ -113,6 +113,9 @@ class Tomograph {
       });
     } else {
       var intersectionPoints = currentPixel.getIntersectionPoints(beam);
+      if (intersectionPoints.isEmpty) {
+        print('');
+      }
       var higherPoint = intersectionPoints.reduce((value, element) {
         if (value.y > element.y) {
           return value;

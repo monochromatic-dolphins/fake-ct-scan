@@ -27,6 +27,8 @@ class _HomePageState extends State<HomePage> {
   final _absorptionCapacityController = TextEditingController();
   final _rayCountController = TextEditingController();
 
+  List<double> calculatedPixels = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +43,7 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     flex: 3,
                     child: state.isTomographReady
-                        ? CTScanDrawer(state.tomograph!)
+                        ? CTScanDrawer(state.tomograph!, calculatedPixels)
                         : SizedBox(
                             height: MediaQuery.of(context).size.height,
                             child: const Center(
@@ -66,9 +68,13 @@ class _HomePageState extends State<HomePage> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 36),
-                        state.isTomographReady ? _buildRectangleForm() : _buildCT(),
+                        state.isTomographReady
+                            ? _buildRectangleForm()
+                            : _buildCT(),
                         const SizedBox(height: 12),
-                        state.isTomographReady ? _buildRectanglesList(state.tomograph!) : Container(),
+                        state.isTomographReady
+                            ? _buildRectanglesList(state.tomograph!)
+                            : Container(),
                       ],
                     ),
                   ),
@@ -188,12 +194,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _finishEditing() {
-    var pixels =
-        Provider.of<AppState>(context, listen: false).calculationsGoBrrr(7);
+    var pixels = Provider.of<AppState>(context, listen: false)
+        .calculationsGoBrrr(int.parse(_resolutionController.text));
+    setState(() {
+      calculatedPixels = pixels;
+    });
     pixels.asMap().forEach((key, value) {
-     // if (value > 0) {
-        print("${key} -> ${value}");
-     // }
+      // if (value > 0) {
+      //    print("${key} -> ${value}");
+      // }
     });
   }
 }

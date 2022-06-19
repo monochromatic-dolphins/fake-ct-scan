@@ -7,9 +7,11 @@ import 'package:fake_tomograf/models/rectangle.dart';
 import 'package:fake_tomograf/models/tomograph.dart';
 
 class RectanglePainter extends CustomPainter {
-  RectanglePainter(this.tomograph);
+  RectanglePainter(this.tomograph, this.context, this.pixels);
 
   final Tomograph tomograph;
+  final BuildContext context;
+  final List<double> pixels;
 
   final _lowPaint = Paint()..color = AppColors.emeraldGreen;
   final _mediumPaint = Paint()..color = AppColors.beeOrange;
@@ -17,13 +19,16 @@ class RectanglePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (pixels.isNotEmpty) return;
     Paint paint;
+    final stepSize = (MediaQuery.of(context).size.height - 100) / tomograph.board.height.toDouble();
+
     for (final rectangle in tomograph.rectangles) {
       final rect = Rect.fromLTWH(
-        rectangle.pointBottomLeft.x * 10,
-        rectangle.pointBottomLeft.y * 10,
-        rectangle.width.toDouble() * 10,
-        rectangle.height.toDouble() * 10,
+        rectangle.pointBottomLeft.x * stepSize,
+        rectangle.pointBottomLeft.y * stepSize,
+        rectangle.width.toDouble() * stepSize,
+        rectangle.height.toDouble() * stepSize,
       );
       switch (rectangle.resistance.getResistanceRange()) {
         case ResistanceRange.low:
@@ -36,6 +41,7 @@ class RectanglePainter extends CustomPainter {
           paint = _highPaint;
           break;
       }
+      // paint = Paint()..color = Color.fromRGBO(rectangle.resistance.toInt(), rectangle.resistance.toInt(), 0, 0.8);
       canvas.drawRect(rect, paint);
     }
   }
